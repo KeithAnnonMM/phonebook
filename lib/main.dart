@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phonebook/screens/delete_contact.dart';
 import 'package:phonebook/screens/new_contact.dart';
+import 'package:phonebook/services/contact.dart';
 import 'package:phonebook/services/contact_book.dart';
 
 void main() {
@@ -29,19 +30,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contactBook = ContactBook();
     return Scaffold(
-      body: ListView.builder(
-        itemCount: contactBook.length,
-        itemBuilder: (context, index) {
-          final contact = contactBook.contact(atIndex: index)!;
-          return Card(
-            child: ListTile(
-              title: Text(contact.name),
-              subtitle: Text(contact.number),
-            ),
+      body: ValueListenableBuilder(
+        valueListenable: ContactBook(),
+        builder: (context, value, child) {
+          final contacts = value;
+          return ListView.builder(
+            itemCount: contacts.length,
+            itemBuilder: (context, index) {
+              final contact = contacts[index];
+              return Dismissible(
+                key: ValueKey(contact.id),
+                onDismissed: ((direction) {
+                  ContactBook().remove(contact: contact);
+                }),
+                child: Card(
+                  child: ListTile(
+                    title: Text(contact.name),
+                    subtitle: Text(contact.number),
+                  ),
+                ),
+              );
+            },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ContactBook().add(contact: Contact(name: 'Mark', number: '12334'));
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

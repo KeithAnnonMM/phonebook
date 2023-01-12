@@ -1,36 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:phonebook/services/contact.dart';
 
-class ContactBook {
-  ContactBook._sharedInstance();
+class ContactBook extends ValueNotifier<List<Contact>> {
+  ContactBook._sharedInstance()
+      : super([Contact(name: 'Keith', number: '+256754330988')]);
   static final ContactBook _shared = ContactBook._sharedInstance();
   factory ContactBook() => _shared;
 
-  final List<Contact> _contacts = [
-    const Contact(name: 'Keith', number: '+256754330988'),
-    const Contact(name: 'Michelle', number: '+256754330988'),
-    const Contact(name: 'Derrick', number: '+256754330988'),
-    const Contact(name: 'Benjamin', number: '+256754330988'),
-    const Contact(name: 'Hudson', number: '+256754330988'),
-    const Contact(name: 'Ritah', number: '+256754330988'),
-    const Contact(name: 'Rinah', number: '+256754330988'),
-    const Contact(name: 'Elijah', number: '+256754330988'),
-    const Contact(name: 'Oscar', number: '+256754330988'),
-    const Contact(name: 'Raymond', number: '+256754330988'),
-    const Contact(name: 'Niktar', number: '+256754330988'),
-    const Contact(name: 'Martha', number: '+256754330988'),
-    const Contact(name: 'Mummy', number: '+256754330988'),
-  ];
-
-  int get length => _contacts.length;
+  int get length => value.length;
 
   void add({required Contact contact}) {
-    _contacts.add(contact);
+    final contacts = value;
+    contacts.add(contact);
+    notifyListeners();
   }
 
   void remove({required Contact contact}) {
-    _contacts.remove(contact);
+    final contacts = value;
+    contacts.remove(contact);
+    notifyListeners();
   }
 
   Contact? contact({required int atIndex}) =>
-      _contacts.length > atIndex ? _contacts[atIndex] : null;
+      value.length > atIndex ? value[atIndex] : null;
 }
